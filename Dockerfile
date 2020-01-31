@@ -22,12 +22,26 @@ RUN mkdir /tmp/opencv-4.1.2/build && cd /tmp/opencv-4.1.2/build && cmake -D CMAK
 #COPY assets/cv.tar.gz /tmp/
 #RUN cd /tmp && tar -xvf /tmp/cv.tar.gz && rm /tmp/cv.tar.gz && cd /tmp/cv/opencv-4.1.2/build && make -j6 install
 ##############################
+RUN apt-get install python3-venv xz-utils -yq
+
 RUN mkdir -p /etc/jupyter/
 COPY config/jupyterhub_config.py /etc/jupyter/jupyterhub_config.py
 COPY config/environment.yaml /etc/jupyter/environment.yaml
-RUN chmod -R 444 /etc/jupyter
+RUN pip install --upgrade pip && pip freeze > /etc/jupyter/base-requirements.txt
+ADD requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
+#RUN wget -q -O/tmp/node.xz https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-x64.tar.xz && tar -xvf /tmp/node.xz -C /tmp/
+RUN export NVM_DIR="/tmp/.nvm" && mkdir -p $NVM_DIR && wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+RUN \. "$NVM_DIR/nvm.sh" && nvm install --lts 12.14.1 && nvm use v12.14.1
+ENV PATH=$PATH:/usr/local/nvm/versions/node/v12.14.1/bin 
+RUN npm cache clean --force 
 
-USER $NB_UID
 
+USER $NB_USER
 WORKDIR /home/$NB_USER
-CMD [ "jupyter lab --config /etc/jupyter/jupyterhub_config.py"]
+
+#RUN python3 -m venv /tmp/${NB_USER}-venv && source /tmp/${NB_USER}-venv/bin/activate
+#RUN pip install -r /etc/jupyter/base-requirements.txt
+
+EXPOSE 8888
+CMD ["jupyterhub", "--config", "/etc/jupyter/jupyterhub_config.py"]
