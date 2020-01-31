@@ -8,6 +8,7 @@ RUN groupadd wheel -g 11 && \
     echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su && \
     useradd -m -s /bin/bash -N -u $NB_UID $NB_USER 
 
+RUN apt update -yq && apt upgrade -yq
 RUN apt-get install -y --no-install-recommends ocl-icd-opencl-dev ocl-icd-libopencl1 silversearcher-ag vim git curl wget
 RUN apt install -y cmake pkg-config libavcodec-dev libavformat-dev libswscale-dev --no-install-recommends
 
