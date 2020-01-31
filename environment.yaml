@@ -1,0 +1,21 @@
+authentication:
+  type: 'active_directory'
+  enabled: false
+  server:
+    address: 'server.address'
+    port: '389'
+    use_ssl: false
+  groups:
+    allowed_groups:
+      - GROUP1
+    allowed_admin_groups:
+      - GROUP2
+  authenticator:
+    bind_dn_template:
+      - "domain\\{username}"
+    user_search_base: 'OU=...' 
+    bind_cn_template: 'OU=...' 
+    user_attribute: 'sAMAccountName'
+    lookup_cn: true
+    use_lookup_cn_username: false
+    lookup_cn_user_cn_attribute: 'cn'
