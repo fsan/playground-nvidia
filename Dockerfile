@@ -1,6 +1,4 @@
-# FROM nvcr.io/nvidia/tensorflow:20.01-tf2-py3
-
-FROM nvcr.io/nvidia/tensorflow:19.10-py3
+FROM nvcr.io/nvidia/tensorflow:20.02-tf2-py3
 # 19.10
 
 ARG NB_USER=user
